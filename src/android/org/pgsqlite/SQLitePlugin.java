@@ -211,6 +211,20 @@ public class SQLitePlugin extends CordovaPlugin {
         }
     }
     /**
+     * Check if a pre-populated database is available
+     * @return prepopulated database.
+     */
+
+    private File getPrePackagedDbIfAvailable(String dbname){
+
+        String applicationPackage = this.cordova.getActivity().getApplicationContext().getPackageName();
+        String baseDirectory = Environment.getExternalStorageDirectory().getPath() +  "/Android/data/" + applicationPackage + "/mapcache/";
+
+        File dbfile = new File(baseDirectory, dbname);
+        return dbfile;
+
+    }
+    /**
      * Open a database.
      *
      * @param dbName   The name of the database file
@@ -222,11 +236,15 @@ public class SQLitePlugin extends CordovaPlugin {
                 cbc.error("database already open");
                 throw new Exception("database already open");
             }
+            
+            File dbfile = getPrePackagedDbIfAvailable(dbname);
+            
+            if(!dbfile.exists()){
+                dbfile = this.cordova.getActivity().getDatabasePath(dbname);
 
-            File dbfile = this.cordova.getActivity().getDatabasePath(dbname);
-
-            if (!dbfile.exists()) {
-                dbfile.getParentFile().mkdirs();
+                if (!dbfile.exists()) {
+                    dbfile.getParentFile().mkdirs();
+                }
             }
 
             Log.v("info", "Open sqlite db: " + dbfile.getAbsolutePath());
