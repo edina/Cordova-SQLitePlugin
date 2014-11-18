@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import android.util.Base64;
 import android.util.Log;
+import android.os.Environment;
 
 import java.io.File;
 import java.lang.IllegalArgumentException;
